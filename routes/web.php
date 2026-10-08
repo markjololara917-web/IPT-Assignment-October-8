@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function() {
     return redirect()->route('dashboard');
 });
+Route::get('/', function () {
+    return redirect()->route('doctors.index');
+});
+
+Route::resource('doctors', DoctorController::class);
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/patients', [PatientController::class, 'index'])->name('patients.index');

@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Doctor;
+use Illuminate\Http\Request;
 
 class DoctorController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of doctors.
      */
     public function index()
     {
-        $doctors = Doctor::all();
+        $doctors = Doctor::latest()->get();
 
         return view('doctors.index', compact('doctors'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new doctor.
      */
     public function create()
     {
@@ -26,39 +26,34 @@ class DoctorController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created doctor.
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'specialization' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required'
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'specialization' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:30',
         ]);
 
-        Doctor::create([
-            'name' => $request->name,
-            'specialization' => $request->specialization,
-            'email' => $request->email,
-            'phone' => $request->phone
-        ]);
+        Doctor::create($validated);
 
         return redirect()
-        ->route('doctors.index')
-        ->with('success', 'Doctor added successfully.');
+            ->route('doctors.index')
+            ->with('success', 'Doctor added successfully!');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified doctor.
      */
-    public function show(string $id)
+    public function show(Doctor $doctor)
     {
-        //
+        return view('doctors.show', compact('doctor'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified doctor.
      */
     public function edit(Doctor $doctor)
     {
@@ -66,39 +61,33 @@ class DoctorController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified doctor.
      */
     public function update(Request $request, Doctor $doctor)
     {
-         $request->validate([
-            'name' => 'required',
-            'specialization' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required'
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'specialization' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:30',
         ]);
 
-          $doctor->update([
-            'name' => $request->name,
-            'specialization' => $request->specialization,
-            'email' => $request->email,
-            'phone' => $request->phone
-        ]);
+        $doctor->update($validated);
 
         return redirect()
-        ->route('doctors.index')
-        ->with('success', 'Doctor updated successfully.');
-
+            ->route('doctors.index')
+            ->with('success', 'Doctor updated successfully!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified doctor.
      */
     public function destroy(Doctor $doctor)
     {
         $doctor->delete();
 
         return redirect()
-        ->route('doctors.index')
-        ->with('success', 'Doctor deleted successfully.');
+            ->route('doctors.index')
+            ->with('success', 'Doctor deleted successfully!');
     }
 }
